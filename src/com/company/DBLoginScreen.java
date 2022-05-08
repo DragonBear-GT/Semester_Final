@@ -251,8 +251,8 @@ public class DBLoginScreen extends javax.swing.JFrame {
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         // LOGIN button
         String user = txtUsername.getText();
-        String pass = pwdPassword.getPassword().toString();
-        if (user == Java2Class.username && pass == Java2Class.password){
+        String pass = new String(pwdPassword.getPassword());
+        if (user.equals(Java2Class.username) && pass.equals(Java2Class.password)){
             new Java2Class().setVisible(true);
         }
         else{

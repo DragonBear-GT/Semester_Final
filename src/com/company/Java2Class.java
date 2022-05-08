@@ -13,6 +13,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.JTable;
 import java.text.MessageFormat;
 
+import static javax.swing.JOptionPane.NO_OPTION;
+
 public class Java2Class extends javax.swing.JFrame {
 
     //Connect to DBMS
@@ -473,7 +475,7 @@ public class Java2Class extends javax.swing.JFrame {
             + "VALUES (?,?,?,?,?,?,?,?,?,?)"
             );
 
-            pst.setString(1, txt_StudentID.setText(StudentID));
+            pst.setString(1, StudentID);
             pst.setString(2, txt_FName.getText());
             pst.setString(3, txt_MI.getText());
             pst.setString(4, txt_LName.getText());
@@ -501,26 +503,30 @@ public class Java2Class extends javax.swing.JFrame {
 
     private void btton_UpdateEntryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btton_UpdateEntryActionPerformed
         // ======== Update Entry information to TABLE =====
+        DefaultTableModel RecordTable = (DefaultTableModel)jTable1.getModel();
+        int SelectedRows = jTable1.getSelectedRow();
+
         try {
+            id = Integer.parseInt(RecordTable.getValueAt(SelectedRows, 0).toString());
             Class.forName("com.mysql.jdbc.Driver");
             SQLConn = DriverManager.getConnection(dbConn, username, password);
-            pst = SQLConn.prepareStatement("update student set (StudentID, `First Name`, `MI`, `Last Name`, Address, `City/Town`, State, ZIP, Phone, `E-Mail`)"
-                    + "VALUES (?,?,?,?,?,?,?,?,?,?)"
+            pst = SQLConn.prepareStatement("update student set `First Name` =?, `MI` =?, `Last Name`=?, Address=?, `City/Town`=?, State=?, ZIP=?, Phone=?, `E-Mail`=?"
+                + "WHERE StudentID =?"
             );
 
-            pst.setString(1, txt_StudentID.setText(StudentID));
-            pst.setString(2, txt_FName.getText());
-            pst.setString(3, txt_MI.getText());
-            pst.setString(4, txt_LName.getText());
-            pst.setString(5, txt_Address.getText());
-            pst.setString(6, txt_CityTown.getText());
-            pst.setString(7, txt_State.getText());
-            pst.setString(8, txt_ZIP.getText());
-            pst.setString(9, txt_Phone.getText());
-            pst.setString(10, txt_Email.getText());
+            pst.setString(1, RecordTable.getValueAt(SelectedRows, 1).toString());
+            pst.setString(2, RecordTable.getValueAt(SelectedRows, 2).toString());
+            pst.setString(3, RecordTable.getValueAt(SelectedRows, 3).toString());
+            pst.setString(4, RecordTable.getValueAt(SelectedRows, 4).toString());
+            pst.setString(5, RecordTable.getValueAt(SelectedRows, 5).toString());
+            pst.setString(6, RecordTable.getValueAt(SelectedRows, 6).toString());
+            pst.setString(7, RecordTable.getValueAt(SelectedRows, 7).toString());
+            pst.setString(8, RecordTable.getValueAt(SelectedRows, 8).toString());
+            pst.setString(9, RecordTable.getValueAt(SelectedRows, 9).toString());
+            pst.setString(10, RecordTable.getValueAt(SelectedRows, 0).toString());
 
             pst.executeUpdate();
-            JOptionPane.showMessageDialog(this, "Record Added to Database");
+            JOptionPane.showMessageDialog(this, "Record Updated in Database");
             upDateDB();
 
         }
@@ -542,20 +548,18 @@ public class Java2Class extends javax.swing.JFrame {
     private void btton_DeleteActionPerformed(java.awt.event.ActionEvent evt) {
 
         DefaultTableModel RecordTable = (DefaultTableModel)jTable1.getModel();
-        RecordTable.setRowCount(0);
-        int SelectedRows = jTable1.getSelectedColumn();
+        int SelectedRows = jTable1.getSelectedRow();
 
         try
         {
             id = Integer.parseInt(RecordTable.getValueAt(SelectedRows, 0).toString());
             deleteItem = JOptionPane.showConfirmDialog(null,"Confirm to delete selected entry",
                     "Warning", JOptionPane.YES_NO_OPTION);
-            if(deleteItem == JOptionPane.YES_OPTION);
+            if(deleteItem == JOptionPane.YES_OPTION)
             {
-
                 Class.forName("com.mysql.jdbc.Driver");
                 SQLConn = DriverManager.getConnection(dbConn, username,password);
-                pst = SQLConn.prepareStatement("Delete from connector where id=?");
+                pst = SQLConn.prepareStatement("Delete from student where StudentID=?");
 
                 pst.setInt(1, id);
                 pst.executeUpdate();
@@ -572,7 +576,6 @@ public class Java2Class extends javax.swing.JFrame {
                 txt_ZIP.setText("");
                 txt_Phone.setText("");
                 txt_Email.setText("");
-
             }
         }
         catch (ClassNotFoundException ex) {

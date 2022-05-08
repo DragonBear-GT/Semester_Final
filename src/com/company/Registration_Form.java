@@ -2,9 +2,9 @@ package com.company;
 
 import javax.swing.JOptionPane;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
+import java.sql.*;
+import java.util.Vector;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -18,12 +18,25 @@ import javax.swing.table.TableModel;
  */
 public class Registration_Form extends javax.swing.JFrame {
 
+    //Connect to DBMS
+    public static final String username = "Student"; // Root system username
+    public static final String password = "Java2Password";// Root system password
+    //DB Table connector
+    private static final String dbConn = "jdbc:mysql://localhost:3306/registration";
+
+    Connection SQLConn = null;
+    PreparedStatement pst = null;
+    ResultSet rs = null;
+    int q, i, id, deleteItem;
+
     /**
      * Creates new form Registration_Form
      */
     public Registration_Form() {
         initComponents();
         this.setLocationRelativeTo(null);
+
+        upDateDB();
     }
 
     /**
@@ -310,13 +323,14 @@ public class Registration_Form extends javax.swing.JFrame {
         private void jTable_RegistrationMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable_RegistrationMouseClicked
             // Populate information in the Registration Form Table
             DefaultTableModel RegTable = (DefaultTableModel)jTable_Registration.getModel();
-            int SelectedRows = jTable_Registration.getSelectedColumn();
+            int SelectedRows = jTable_Registration.getSelectedRow();
 
-            txtFName.setText(RegTable.getValueAt(SelectedRows, 1).toString());
-            txtMI.setText(RegTable.getValueAt(SelectedRows, 2).toString());
-            txtLName.setText(RegTable.getValueAt(SelectedRows, 3).toString());
-            txtEmail.setText(RegTable.getValueAt(SelectedRows, 4).toString());
-            txtMobile.setText(RegTable.getValueAt(SelectedRows, 5).toString());
+            txtFName.setText(RegTable.getValueAt(SelectedRows, 2).toString());
+            txtMI.setText(RegTable.getValueAt(SelectedRows, 3).toString());
+            txtLName.setText(RegTable.getValueAt(SelectedRows, 4).toString());
+            txtEmail.setText(RegTable.getValueAt(SelectedRows, 5).toString());
+            txtMobile.setText(RegTable.getValueAt(SelectedRows, 6).toString());
+            pwdPassword.setText(RegTable.getValueAt(SelectedRows,7).toString());
 
         }//GEN-LAST:event_jTable_RegistrationMouseClicked
 
@@ -328,7 +342,43 @@ public class Registration_Form extends javax.swing.JFrame {
                 txtLName.getText(),
                 txtEmail.getText(),
                 txtMobile.getText()} );
-    }//GEN-LAST:event_jBtn_RegTableActionPerformed
+
+        int numb;
+        String StudentID = "0";
+        numb = 1000 + (int)(Math.random()*1000);
+        StudentID += numb + 100;
+        //txt_StudentID.setText(StudentID);
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            SQLConn = DriverManager.getConnection(dbConn, username, password);
+            pst = SQLConn.prepareStatement("Insert into register(RegisterID, `First Name`, `MI`, `Last Name`, Email, Mobile, Password)"
+                    + "VALUES (?,?,?,?,?,?)"
+            );
+
+            pst.setString(0, StudentID);
+            pst.setString(1, txtFName.getText());
+            pst.setString(2, txtMI.getText());
+            pst.setString(3, txtLName.getText());
+            pst.setString(4, txtEmail.getText());
+            pst.setString(5, txtMobile.getText());
+            pst.setString(6, pwdPassword.toString());
+
+            pst.executeUpdate();
+            JOptionPane.showMessageDialog(this, "Record Added to Database");
+            upDateDB();
+
+        }
+        catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(Java2Class.class.getName()).log(java.util.logging.Level.SEVERE,
+                    null, ex);
+        }
+        catch (SQLException ex){
+            java.util.logging.Logger.getLogger(Java2Class.class.getName()).log(java.util.logging.Level.SEVERE,
+                    null, ex);
+        }
+    }
+    //GEN-LAST:event_jBtn_RegTableActionPerformed
 
     /**
      * @param args the command line arguments
@@ -363,6 +413,57 @@ public class Registration_Form extends javax.swing.JFrame {
                 new Registration_Form().setVisible(true);
             }
         });
+    }
+
+    public void useName() throws ClassNotFoundException, SQLException {
+        Class.forName("com.mysql.jdbc.Driver");
+        SQLConn = DriverManager.getConnection(dbConn, username, password);
+        pst = SQLConn.prepareStatement("SELECT * from register(Email))"
+        );
+    }
+
+    public void passWD() throws ClassNotFoundException, SQLException {
+        Class.forName("com.mysql.jdbc.Driver");
+        SQLConn = DriverManager.getConnection(dbConn, username, password);
+        pst = SQLConn.prepareStatement("SELECT * from register(Password))"
+        );
+    }
+
+    public void upDateDB()
+    {
+        try
+        {
+            Class.forName("com.mysql.jdbc.Driver");
+            SQLConn = DriverManager.getConnection(dbConn, username, password);
+            pst = SQLConn.prepareStatement("select * from register");
+
+            rs = pst.executeQuery();
+            ResultSetMetaData StData = rs.getMetaData();
+
+            q = StData.getColumnCount();
+
+            DefaultTableModel RecordTable = (DefaultTableModel)jTable_Registration.getModel();
+            RecordTable.setRowCount(0);
+
+            while (rs.next()) {
+                Vector columnData = new Vector();
+
+                for (i = 1; i <= q; i++)
+                {
+                    columnData.add(rs.getString("RegisterID"));
+                    columnData.add(rs.getString("First Name"));
+                    columnData.add(rs.getString("MI"));
+                    columnData.add(rs.getString("Last Name"));
+                    columnData.add(rs.getString("Email"));
+                    columnData.add(rs.getString("Mobile"));
+                    columnData.add(rs.getString("Password"));
+                }
+                RecordTable.addRow(columnData);
+            }
+        }
+        catch (Exception ex){
+            JOptionPane.showMessageDialog(null, ex);
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
