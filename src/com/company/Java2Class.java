@@ -16,10 +16,10 @@ import java.text.MessageFormat;
 public class Java2Class extends javax.swing.JFrame {
 
     //Connect to DBMS
-    private static final String username = "Student"; // Root system username
-    private static final String password = "Java2Password";// Root system password
+    public static final String username = "Student"; // Root system username
+    public static final String password = "Java2Password";// Root system password
     //DB Table connector
-    private static final String dbConn = "jdbc:mysql://localhost:127.0.0.1:3306/java2class.javaclass_connector";
+    private static final String dbConn = "jdbc:mysql://localhost:3306/nscc_students";
 
     Connection SQLConn = null;
     PreparedStatement pst = null;
@@ -112,52 +112,52 @@ public class Java2Class extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel3.setText("First Name:");
 
-        txt_FName.setText(" ");
+        txt_FName.setText("");
         txt_FName.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel4.setText("MI:");
 
-        txt_MI.setText(" ");
+        txt_MI.setText("");
         txt_MI.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel5.setText("Last Name:");
 
-        txt_LName.setText(" ");
+        txt_LName.setText("");
         txt_LName.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel6.setText("Address:");
 
-        txt_Address.setText(" ");
+        txt_Address.setText("");
         txt_Address.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         jLabel7.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel7.setText("City/Town:");
 
-        txt_CityTown.setText(" ");
+        txt_CityTown.setText("");
         txt_CityTown.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         jLabel8.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel8.setText("State:");
 
-        txt_State.setText(" ");
+        txt_State.setText("");
         txt_State.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         jLabel9.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel9.setText("ZIP:");
 
-        txt_ZIP.setText(" ");
+        txt_ZIP.setText("");
         txt_ZIP.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         jLabel10.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel10.setText("Phone:");
 
-        txt_Phone.setText(" ");
+        txt_Phone.setText("");
         txt_Phone.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
-        txt_Email.setText(" ");
+        txt_Email.setText("");
         txt_Email.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         jLabel11.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -169,7 +169,7 @@ public class Java2Class extends javax.swing.JFrame {
 
                 },
                 new String [] {
-                        "Student ID", "First Name", "MI", "Last Name", "Address", "City/Town", "State", "ZIP", "Phone", "E-Mail"
+                        "StudentID", "First Name", "MI", "Last Name", "Address", "City/Town", "State", "ZIP", "Phone", "E-Mail"
                 }
         ));
         jScrollPane1.setViewportView(jTable1);
@@ -309,6 +309,11 @@ public class Java2Class extends javax.swing.JFrame {
         btton_Delete.setForeground(new java.awt.Color(255, 255, 255));
         btton_Delete.setText("Delete Entry");
         btton_Delete.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btton_Delete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btton_DeleteActionPerformed(evt);
+            }
+        });
 
         btton_Exit.setBackground(new java.awt.Color(51, 0, 255));
         btton_Exit.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -393,7 +398,7 @@ public class Java2Class extends javax.swing.JFrame {
         {
             Class.forName("com.mysql.jdbc.Driver");
             SQLConn = DriverManager.getConnection(dbConn, username, password);
-            pst = SQLConn.prepareStatement("select * from java2class.javaclass_connector");
+            pst = SQLConn.prepareStatement("select * from student");
 
             rs = pst.executeQuery();
             ResultSetMetaData StData = rs.getMetaData();
@@ -408,16 +413,16 @@ public class Java2Class extends javax.swing.JFrame {
 
                 for (i = 1; i <= q; i++)
                 {
-                    columnData.add(rs.getShort("student ID"));
-                    columnData.add(rs.getShort("First Name"));
-                    columnData.add(rs.getShort("MI"));
-                    columnData.add(rs.getShort("Last Name"));
-                    columnData.add(rs.getShort("Address"));
-                    columnData.add(rs.getShort("City/Town"));
-                    columnData.add(rs.getShort("State"));
-                    columnData.add(rs.getShort("ZIP"));
-                    columnData.add(rs.getShort("EMAIL"));
-                    columnData.add(rs.getShort("Phone"));
+                    columnData.add(rs.getString("StudentID"));
+                    columnData.add(rs.getString("First Name"));
+                    columnData.add(rs.getString("MI"));
+                    columnData.add(rs.getString("Last Name"));
+                    columnData.add(rs.getString("Address"));
+                    columnData.add(rs.getString("City/Town"));
+                    columnData.add(rs.getString("State"));
+                    columnData.add(rs.getString("ZIP"));
+                    columnData.add(rs.getString("Phone"));
+                    columnData.add(rs.getString("E-Mail"));
                 }
                 RecordTable.addRow(columnData);
             }
@@ -454,13 +459,21 @@ public class Java2Class extends javax.swing.JFrame {
 
     private void btton_AddEntry1ActionPerformed(java.awt.event.ActionEvent evt) throws ClassNotFoundException {//GEN-FIRST:event_btton_AddEntry1ActionPerformed
         // ===== ADD ENTRY to MySQL DB =====
+        //===== Automatic STUDENT ID NUMBER =====
+        int numb;
+        String StudentID = "0";
+        numb = 1000 + (int)(Math.random()*1000);
+        StudentID += numb + 100;
+        //txt_StudentID.setText(StudentID);
+
         try {
             Class.forName("com.mysql.jdbc.Driver");
             SQLConn = DriverManager.getConnection(dbConn, username, password);
-            pst = SQLConn.prepareStatement("Insert into javaclass_connector(Student ID = ?, First Name = ?, "
-                    + "Last Name = ?, EMAIL=?, Phone=?)");
+            pst = SQLConn.prepareStatement("Insert into student(StudentID, `First Name`, `MI`, `Last Name`, Address, `City/Town`, State, ZIP, Phone, `E-Mail`)"
+            + "VALUES (?,?,?,?,?,?,?,?,?,?)"
+            );
 
-            pst.setString(1, txt_StudentID.getText());
+            pst.setString(1, txt_StudentID.setText(StudentID));
             pst.setString(2, txt_FName.getText());
             pst.setString(3, txt_MI.getText());
             pst.setString(4, txt_LName.getText());
@@ -487,21 +500,90 @@ public class Java2Class extends javax.swing.JFrame {
     }//GEN-LAST:event_btton_AddEntry1ActionPerformed
 
     private void btton_UpdateEntryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btton_UpdateEntryActionPerformed
-        //===== Automatic STUDENT ID NUMBER =====
-        int numb;
-        String StudentID = "";
-        numb = 1000 + (int)(Math.random()*1000);
-        StudentID += numb + 100;
-        txt_StudentID.setText(StudentID);
-
         // ======== Update Entry information to TABLE =====
-        DefaultTableModel model = (DefaultTableModel)jTable1.getModel();
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            SQLConn = DriverManager.getConnection(dbConn, username, password);
+            pst = SQLConn.prepareStatement("update student set (StudentID, `First Name`, `MI`, `Last Name`, Address, `City/Town`, State, ZIP, Phone, `E-Mail`)"
+                    + "VALUES (?,?,?,?,?,?,?,?,?,?)"
+            );
 
+            pst.setString(1, txt_StudentID.setText(StudentID));
+            pst.setString(2, txt_FName.getText());
+            pst.setString(3, txt_MI.getText());
+            pst.setString(4, txt_LName.getText());
+            pst.setString(5, txt_Address.getText());
+            pst.setString(6, txt_CityTown.getText());
+            pst.setString(7, txt_State.getText());
+            pst.setString(8, txt_ZIP.getText());
+            pst.setString(9, txt_Phone.getText());
+            pst.setString(10, txt_Email.getText());
+
+            pst.executeUpdate();
+            JOptionPane.showMessageDialog(this, "Record Added to Database");
+            upDateDB();
+
+        }
+        catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(Java2Class.class.getName()).log(java.util.logging.Level.SEVERE,
+                    null, ex);
+        }
+        catch (SQLException ex){
+            java.util.logging.Logger.getLogger(Java2Class.class.getName()).log(java.util.logging.Level.SEVERE,
+                    null, ex);
+        }
+        /*DefaultTableModel model = (DefaultTableModel)jTable1.getModel();
         model.addRow(new Object []
                 {txt_StudentID.getText(),txt_FName.getText(),txt_MI.getText(), txt_LName.getText(),
                         txt_Address.getText(),txt_CityTown.getText(), txt_State.getText(), txt_ZIP.getText(),
-                        txt_Phone.getText(), txt_Email.getText()});
+                        txt_Phone.getText(), txt_Email.getText()});*/
     }//GEN-LAST:event_btton_UpdateEntryActionPerformed
+
+    private void btton_DeleteActionPerformed(java.awt.event.ActionEvent evt) {
+
+        DefaultTableModel RecordTable = (DefaultTableModel)jTable1.getModel();
+        RecordTable.setRowCount(0);
+        int SelectedRows = jTable1.getSelectedColumn();
+
+        try
+        {
+            id = Integer.parseInt(RecordTable.getValueAt(SelectedRows, 0).toString());
+            deleteItem = JOptionPane.showConfirmDialog(null,"Confirm to delete selected entry",
+                    "Warning", JOptionPane.YES_NO_OPTION);
+            if(deleteItem == JOptionPane.YES_OPTION);
+            {
+
+                Class.forName("com.mysql.jdbc.Driver");
+                SQLConn = DriverManager.getConnection(dbConn, username,password);
+                pst = SQLConn.prepareStatement("Delete from connector where id=?");
+
+                pst.setInt(1, id);
+                pst.executeUpdate();
+                JOptionPane.showMessageDialog(this, "Record Updated");
+                upDateDB();
+
+                txt_StudentID.setText("");
+                txt_StudentID.requestFocus();
+                txt_FName.setText("");
+                txt_LName.setText("");
+                txt_Address.setText("");
+                txt_CityTown.setText("");
+                txt_State.setText("");
+                txt_ZIP.setText("");
+                txt_Phone.setText("");
+                txt_Email.setText("");
+
+            }
+        }
+        catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(Java_MysqlConn.class.getName()).log(java.util.logging.Level.SEVERE,
+                    null, ex);
+        } catch (SQLException ex) {
+            //System.err.println(ex);
+            java.util.logging.Logger.getLogger(Java_MysqlConn.class.getName()).log(java.util.logging.Level.SEVERE,
+                    null, ex);
+        }
+    }
 
     /**
      * @param args the command line arguments

@@ -250,12 +250,20 @@ public class DBLoginScreen extends javax.swing.JFrame {
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         // LOGIN button
-        //If Username and Password do not match
-        //Pop-up error message
-
-        //  JOptionPane.showMessageDialog(null, "Invalid Username / Password", "Login Error", 2);
         String user = txtUsername.getText();
         String pass = pwdPassword.getPassword().toString();
+        if (user == Java2Class.username && pass == Java2Class.password){
+            new Java2Class().setVisible(true);
+        }
+        else{
+            JOptionPane.showMessageDialog(this, "Wrong Username or Password. Please try again.",
+                    "ERROR", JOptionPane.ERROR_MESSAGE);
+            txtUsername.setText("");
+            pwdPassword.setText("");
+        }
+        //If Username and Password do not match
+        //Pop-up error message
+        //  JOptionPane.showMessageDialog(null, "Invalid Username / Password", "Login Error", 2);
         if (user.isEmpty() || pass.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Username or Password field is empty. Please try again.",
                     "ERROR", JOptionPane.ERROR_MESSAGE);

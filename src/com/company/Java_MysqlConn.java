@@ -21,7 +21,7 @@ public class Java_MysqlConn extends javax.swing.JFrame {
     //===== MySQL Connection =====
     private static final String username = "Student";
     private static final String password = "Java2Password";
-    private static final String dataConn = "jdbc:mysql://localhost:3306/mysql";
+    private static final String dataConn = "jdbc:mysql://localhost:3306/nscc_students";
 
     //===== CONNECTOR =====
     Connection sqlConn = null;
@@ -44,7 +44,7 @@ public class Java_MysqlConn extends javax.swing.JFrame {
         {
             Class.forName("com.mysql.jdbc.Driver");
             sqlConn = DriverManager.getConnection(dataConn,username, password);
-            pst = sqlConn.prepareStatement("select * from connector");
+            pst = sqlConn.prepareStatement("select * from student");
 
             rs = pst.executeQuery();
             ResultSetMetaData stData = rs.getMetaData();
@@ -60,6 +60,7 @@ public class Java_MysqlConn extends javax.swing.JFrame {
                 {
                     columnData.add(rs.getString("StudentID"));
                     columnData.add(rs.getString("First Name"));
+                    columnData.add(rs.getString("MI"));
                     columnData.add(rs.getString("Last Name"));
                     columnData.add(rs.getString("Address"));
                     columnData.add(rs.getString("City/Town"));
@@ -103,7 +104,7 @@ public class Java_MysqlConn extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         jTextField_Phone = new javax.swing.JTextField();
         jTextField_Email = new javax.swing.JTextField();
-        //jPanel3 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
         jButton_AddEntry = new javax.swing.JButton();
         jButton_Update = new javax.swing.JButton();
         jButton_Clear = new javax.swing.JButton();
@@ -490,7 +491,7 @@ public class Java_MysqlConn extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(Java_MysqlConn.class.getName()).log(java.util.logging.Level.SEVERE,
                     null, ex);
         } catch (SQLException ex) {
-            //System.err.println(ex);
+            System.err.println(ex);
             java.util.logging.Logger.getLogger(Java_MysqlConn.class.getName()).log(java.util.logging.Level.SEVERE,
                     null, ex);
         }
